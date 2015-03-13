@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+         <title>V6 SVG</title>
+        <link rel="stylesheet" href="stylesheet.css">
+        <link rel="stylesheet" href="prism.css">
+        <script src="snap.svg-min.js"></script>
+        <script src="jquery-1.11.0.js"></script>
+        <script src="prism.js"></script>
+        
+    </head>
+    <body>
+        <svg id="svg" width="400" height="400" style="float:left"></svg>
+        
+
+
+        <script>
+        var S;
+        var s = Snap('#svg'),
+
+            // small surrounding circles
+            sc1 = s.circle(200, 200, 40),
+            sc2 = s.circle(200, 200, 40),
+            sc3 = s.circle(200, 200, 40),
+            sc4 = s.circle(200, 200, 40),
+            sc5 = s.circle(200, 200, 40),
+            sc6 = s.circle(200, 200, 40),
+            sc7 = s.circle(200, 200, 40),
+            sc8 = s.circle(200, 200, 40),
+
+            // small text inside small circles
+            v6_coding =s.text(177, 205, "Coding"), // change only x
+            v6_cdi =s.text(185, 205, "CDI"),
+            v6_ehr =s.text(185, 205, "EHR"),
+            v6_cqm =s.text(183, 205, "CQM"),
+            v6_research =s.text(173, 205, "Research"),
+            v6_analytics =s.text(173, 205, "Analytics"),
+            v6_hie =s.text(185, 205, "HIE"),
+            v6_safety =s.text(180, 205, "Safety"),
+
+            // groups for each small circle and text 
+            group_coding = s.group(sc1, v6_coding),
+            group_cdi = s.group(sc2, v6_cdi),
+            group_ehr = s.group(sc3, v6_ehr),
+            group_cqm = s.group(sc4, v6_cqm),
+            group_research = s.group(sc5, v6_research),
+            group_analytics = s.group(sc6, v6_analytics),
+            group_hie = s.group(sc7, v6_hie),
+            group_safety = s.group(sc8, v6_safety),
+
+            circleArr = [],
+            pathArr = [],
+            textArr = [];
+
+        function setCircleAttr(_circles, _fill, _stroke, _strokeWidth){
+            for(var i = 0; i < _circles.length; i++){
+                _circles[i].attr({
+                    fill: _fill,
+                    stroke: _stroke,
+                    strokeWidth: _strokeWidth
+                });
+            }
+        }
+        function setPathAttr(_paths, _fill, _stroke, _strokeWidth){
+            for(var i = 0; i < _paths.length; i++){
+                _paths[i].attr({
+                    fill: _fill,
+                    stroke: _stroke,
+                    strokeWidth: _strokeWidth
+                });
+            }
+        }
+        function setTextAttr(_textArr, _color, _opacity){
+            for(var i = 0; i < _textArr.length; i++){
+                _textArr[i].attr({
+                    fontSize:"16px",
+                    fill:_color,
+                    opacity:_opacity
+                });
+            }
+        }
+
+
+        function translateMe(_x, _y){
+
+            var myMatrix = new Snap.Matrix();
+            myMatrix.translate(_x,_y);      // this translate will not be applied to the rotation
+            return myMatrix;
+        }
+
+        function initv6(){
+            circleArr.push(sc1);
+            circleArr.push(sc2);
+            circleArr.push(sc3);
+            circleArr.push(sc4);
+            circleArr.push(sc5);
+            circleArr.push(sc6);
+            circleArr.push(sc7);
+            circleArr.push(sc8);
+            setCircleAttr(circleArr, "#ccc", "#000", 2);
+
+            group_coding.animate({ transform: translateMe(0, -150) }, 300);
+            group_cdi.animate({ transform: translateMe(110, -110) }, 600);
+            group_ehr.animate({ transform: translateMe(150, 0) }, 900);
+            group_cqm.animate({ transform: translateMe(110, 110) }, 1200);
+            group_research.animate({ transform: translateMe(0, 150) }, 1500);
+            group_analytics.animate({ transform: translateMe(-110, 110) }, 1800);
+            group_hie.animate({ transform: translateMe(-150, 0) }, 2100);
+            group_safety.animate({ transform: translateMe(-110, -110) }, 2400);
+        }
+        
+	
+        window.onload = function () {
+            initv6();
+        }
+
+        </script>
+        
+    </body>
+</html>

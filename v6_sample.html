@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+         <title>V6 SVG</title>
+        <link rel="stylesheet" href="stylesheet.css">
+        <link rel="stylesheet" href="prism.css">
+        <script src="snap.svg-min.js"></script>
+        <script src="jquery-1.11.0.js"></script>
+        <script src="prism.js"></script>
+        
+    </head>
+    <body>
+        <svg id="svg" width="400" height="400" style="float:left"></svg>
+        
+
+
+        <script>
+        var S;
+        var s = Snap('#svg'),
+
+            // lines drawn from big circle's center to each small circle
+            l1 = s.path("M200,200"),
+            l2 = s.path("M200,200"),
+            l3 = s.path("M200,200"),
+            l4 = s.path("M200,200"),
+            l5 = s.path("M200,200"),
+            l6 = s.path("M200,200"),
+            l7 = s.path("M200,200"),
+            l8 = s.path("M200,200"),
+            l9 = s.path("M200,200"),
+
+            // small surrounding circles
+            sc1 = s.circle(200, 200, 40),
+            sc2 = s.circle(200, 200, 40),
+            sc3 = s.circle(200, 200, 40),
+            sc4 = s.circle(200, 200, 40),
+            sc5 = s.circle(200, 200, 40),
+            sc6 = s.circle(200, 200, 40),
+            sc7 = s.circle(200, 200, 40),
+            sc8 = s.circle(200, 200, 40),
+            sc9 = s.circle(200, 200, 40),
+
+            // small text inside small circles
+            v6_cdi =s.text(187, 205, "CDI"), // change only x
+            v6_cac =s.text(185, 205, "CAC"),
+            v6_audit =s.text(185, 205, "Audit"),
+            v6_quality =s.text(180, 205, "Quality"),
+            v6_research =s.text(173, 205, "Research"),
+            v6_registry =s.text(175, 205, "Registry"),
+            v6_connect =s.text(175, 205, "Connect"),
+            v6_comply =s.text(175, 205, "Comply"),
+            v6_analyze =s.text(175, 205,"Analyze"),
+
+            // groups for each small circle and text 
+            group_cdi = s.group(sc1, v6_cdi),
+            group_cac = s.group(sc2, v6_cac),
+            group_audit = s.group(sc3, v6_audit),
+            group_quality = s.group(sc4, v6_quality),
+            group_research = s.group(sc5, v6_research),
+            group_registry = s.group(sc6, v6_registry),
+            group_connect = s.group(sc7, v6_connect),
+            group_comply = s.group(sc8, v6_comply),
+            group_analyze = s.group(sc9, v6_analyze),
+
+            // large center cirlce
+            bigCircle = s.circle(200, 200, 100),
+            // main text "V6"
+            v6Text = s.text(165,220, "v6"),
+
+            circleArr = [],
+            pathArr = [],
+            textArr = [];
+
+        function setCircleAttr(_circles, _fill, _stroke, _strokeWidth){
+            for(var i = 0; i < _circles.length; i++){
+                _circles[i].attr({
+                    fill: _fill,
+                    stroke: _stroke,
+                    strokeWidth: _strokeWidth
+                });
+            }
+        }
+        function setPathAttr(_paths, _fill, _stroke, _strokeWidth){
+            for(var i = 0; i < _paths.length; i++){
+                _paths[i].attr({
+                    fill: _fill,
+                    stroke: _stroke,
+                    strokeWidth: _strokeWidth
+                });
+            }
+        }
+        function setTextAttr(_textArr, _color, _opacity){
+            for(var i = 0; i < _textArr.length; i++){
+                _textArr[i].attr({
+                    fontSize:"16px",
+                    fill:_color,
+                    opacity:_opacity
+                });
+            }
+        }
+
+
+        function translateMe(_x, _y){
+
+            var myMatrix = new Snap.Matrix();
+            myMatrix.translate(_x,_y);      // this translate will not be applied to the rotation
+            return myMatrix;
+        }
+
+        function initv6(){
+            circleArr.push(sc1);
+            circleArr.push(sc2);
+            circleArr.push(sc3);
+            circleArr.push(sc4);
+            circleArr.push(sc5);
+            circleArr.push(sc6);
+            circleArr.push(sc7);
+            circleArr.push(sc8);
+            circleArr.push(sc9);
+
+            pathArr.push(l1);
+            pathArr.push(l2);
+            pathArr.push(l3);
+            pathArr.push(l4);
+            pathArr.push(l5);
+            pathArr.push(l6);
+            pathArr.push(l7);
+            pathArr.push(l8);
+            pathArr.push(l9);
+
+            textArr.push(v6_cdi);
+            textArr.push(v6_cac);
+            textArr.push(v6_audit);
+            textArr.push(v6_quality);
+            textArr.push(v6_research);
+            textArr.push(v6_registry);
+            textArr.push(v6_connect);
+            textArr.push(v6_comply);
+            textArr.push(v6_analyze);
+
+            if(localStorage.getItem("custom-cirlce")){
+                var customCircle = JSON.parse(localStorage.getItem("custom-cirlce"));
+                setCircleAttr(circleArr, customCircle.smallCircle.fill, customCircle.smallCircle.stroke, customCircle.smallCircle.strokeWidth);
+                setPathAttr(pathArr, "none", customCircle.connLine.stroke, 4);
+                setTextAttr(textArr, customCircle.smallCircleText.fill, 1);
+                bigCircle.attr({
+                    fill: customCircle.bigCircle.fill,
+                    stroke: customCircle.bigCircle.stroke,
+                    strokeWidth: customCircle.bigCircle.strokeWidth
+                });
+                v6Text.attr({
+                    fontSize: "72px",
+                    fill:customCircle.bigCircleText.fill
+                });
+
+
+                $("#bc-bg-color").val(customCircle.bigCircle.fill);
+                $("#bc-border-color").val(customCircle.bigCircle.stroke);
+                $("#bc-border-width").val(customCircle.bigCircle.strokeWidth);
+                $("#bc-txt-color").val(customCircle.bigCircleText.fill);
+
+                $("#sc-bg-color").val(customCircle.smallCircle.fill);
+                $("#sc-border-color").val(customCircle.smallCircle.stroke);
+                $("#sc-border-width").val(customCircle.smallCircle.strokeWidth);
+                $("#sc-txt-color").val(customCircle.smallCircleText.fill);
+                $("#conn-line-color").val(customCircle.connLine.stroke);
+
+            }
+            else{
+                setCircleAttr(circleArr, "#0080FF", "#000", 2);
+                setPathAttr(pathArr, "none", "#000", 4);
+                setTextAttr(textArr, "#FFF", 1);
+                bigCircle.attr({
+                    fill: "#0080FF",
+                    stroke: "#000",
+                    strokeWidth: 2
+                });
+                v6Text.attr({
+                    fontSize: "72px",
+                    fill:"#FFF"
+                });
+            }
+        }
+        
+		s.hover(function(){
+            // big cirlce
+			bigCircle.animate({r: 70}, 300);
+
+
+            group_cdi.animate({ transform: translateMe(0, -140) }, 300, mina.easeinout);
+            group_cac.animate({ transform: translateMe(95, -110) }, 300, mina.easeinout);
+            group_audit.animate({ transform: translateMe(140, -20) }, 300, mina.easeinout);
+            group_quality.animate({ transform: translateMe(120, 75) }, 300, mina.easeinout);
+            group_research.animate({ transform: translateMe(50, 140) }, 300, mina.easeinout);
+            group_registry.animate({ transform: translateMe(-50, 140) }, 300, mina.easeinout);
+            group_connect.animate({ transform: translateMe(-120, 75) }, 300, mina.easeinout);
+            group_comply.animate({ transform: translateMe(-140, -20) }, 300, mina.easeinout);
+            group_analyze.animate({ transform: translateMe(-95, -110) }, 300, mina.easeinout);
+
+            // lines
+            l1.animate({ d: "M200,200L200,60" }, 310); // 1
+            l2.animate({ d: "M200,200L295,90" }, 310); // 2
+            l3.animate({ d: "M200,200L340,180" }, 310); // 3
+            l4.animate({ d: "M200,200L320,280" }, 310); // 4
+            l5.animate({ d: "M200,200L250,340" }, 310); // 5
+            l6.animate({ d: "M200,200L150,340" }, 310); // 6
+            l7.animate({ d: "M200,200L80,280" }, 310); // 7
+            l8.animate({ d: "M200,200L60,180" }, 310); // 8
+            l9.animate({ d: "M200,200L105,90" }, 310); // 9
+
+		}, function(){
+            // big circle
+			bigCircle.animate({r: 100}, 300);
+
+            group_cdi.animate({ transform: translateMe(0, 0) }, 300);
+            group_cac.animate({ transform: translateMe(0, 0) }, 300);
+            group_audit.animate({ transform: translateMe(0, 0) }, 300);
+            group_quality.animate({ transform: translateMe(0, 0) }, 300);
+            group_research.animate({ transform: translateMe(0, 0) }, 300);
+            group_registry.animate({ transform: translateMe(0, 0) }, 300);
+            group_connect.animate({ transform: translateMe(0, 0) }, 300);
+            group_comply.animate({ transform: translateMe(0, 0) }, 300);
+            group_analyze.animate({ transform: translateMe(0, 0) }, 300);
+
+            // lines
+            l1.animate({ d: "M200,200" }, 310);
+            l2.animate({ d: "M200,200" }, 310);
+            l3.animate({ d: "M200,200" }, 310);
+            l4.animate({ d: "M200,200" }, 310);
+            l5.animate({ d: "M200,200" }, 310);
+            l6.animate({ d: "M200,200" }, 310);
+            l7.animate({ d: "M200,200" }, 310);
+            l8.animate({ d: "M200,200" }, 310);
+            l9.animate({ d: "M200,200" }, 310);
+           
+		}, bigCircle, bigCircle);
+        
+        function changeCircle(_circleType, _prop, _value){
+            switch(_circleType){
+                case "big":
+                    switch(_prop){
+                        case "fill":
+                            bigCircle.attr({ "fill":_value});
+                            break;
+                        case "stroke":
+                            bigCircle.attr({ "stroke":_value});
+                            break;
+                        case "strokeWidth":
+                            bigCircle.attr({ "strokeWidth":_value});
+                            break;
+                    }
+                    break;
+                case "small":
+                    switch(_prop){
+                        case "fill":
+                            for(var i = 0; i < circleArr.length; i++){
+                                circleArr[i].attr({"fill":_value});
+                            }
+                            break;
+                        case "stroke":
+                            for(var i = 0; i < circleArr.length; i++){
+                                circleArr[i].attr({"stroke":_value});
+                            }
+                            break;
+                        case "strokeWidth":
+                            for(var i = 0; i < circleArr.length; i++){
+                                circleArr[i].attr({"strokeWidth":_value});
+                            }
+                            break;
+                    }
+                    break;
+            }
+        }
+
+        function changeCircleTxt(_type, _prop, _value){
+            switch(_type){
+                case "big":
+                    v6Text.attr({ "fill":_value});
+                    break;
+                case "small":
+                    for(var i = 0; i < textArr.length; i++){
+                        textArr[i].attr({"fill":_value});
+                    }
+                    break;
+            }
+            
+        }
+
+        function changeLine(_prop, _value){
+            for(var i = 0; i < pathArr.length; i++){
+                pathArr[i].attr({"stroke":_value});
+            }
+        }
+
+        function saveCustomSVG(){
+            var customCircle = {
+                bigCircle:{
+                    fill:$("#bc-bg-color").val(),
+                    stroke:$("#bc-border-color").val(),
+                    strokeWidth:$("#bc-border-width").val()
+                },
+                bigCircleText:{
+                    fill:$("#bc-txt-color").val(),
+                },
+                smallCircle:{
+                    fill:$("#sc-bg-color").val(),
+                    stroke:$("#sc-border-color").val(),
+                    strokeWidth:$("#sc-border-width").val()
+                },
+                smallCircleText:{
+                    fill:$("#sc-txt-color").val()
+                },
+                connLine:{
+                    stroke:$("#conn-line-color").val()
+                }
+            }
+            localStorage.removeItem("custom-cirlce");
+            localStorage.setItem("custom-cirlce", JSON.stringify(customCircle));
+        }
+
+        window.onload = function () {
+            initv6();
+        }
+
+        </script>
+        <div style="float:left">
+            <h1>V6 Animation Tester</h1>
+          <a href="v6_other.html">Other v6 Animation</a>
+            <div style="float:left">
+                <h2> Big Circle </h2>
+                <label>BG Color</label><br><input type="color" id="bc-bg-color" value="#0080FF" onchange="changeCircle('big', 'fill', $(this).val())"><br><br>
+                <label>Font Color</label><br><input type="color" id="bc-txt-color" value="#FFFFFF" onchange="changeCircleTxt('big', 'fill', $(this).val())"><br><br>
+                <label>Border Width</label><br><input type="range" id="bc-border-width" value="2" min="0" max="10" onchange="changeCircle('big', 'strokeWidth', $(this).val())"><br><br>
+                <label>Border Color</label><br><input type="color" id="bc-border-color" value="#000000" onchange="changeCircle('big', 'stroke', $(this).val())"><br><br>
+
+            </div>
+            <div style="float:left">
+                <h2> Small Circles </h2>
+                <label>BG Color</label><br><input type="color" id="sc-bg-color" value="#0080FF" onchange="changeCircle('small', 'fill', $(this).val())"><br><br>
+                <label>Font Color</label><br><input type="color" id="sc-txt-color" value="#FFFFFF" onchange="changeCircleTxt('small', 'fill', $(this).val())"><br><br>
+                <label>Border Width</label><br><input type="range" id="sc-border-width" value="2" min="0" max="10" onchange="changeCircle('small', 'strokeWidth', $(this).val())"><br><br>
+                <label>Border Color</label><br><input type="color" id="sc-border-color" value="#000000" onchange="changeCircle('small', 'stroke', $(this).val())"><br><br>
+                
+            </div>
+            <div style="float:left;margin-left:10px;">
+                <h2>Connector Lines</h2>
+                <label>Line Color</label><br><input type="color" id="conn-line-color" value="#000000" onchange="changeLine('stroke', $(this).val())"><br><br>
+                <p>Saving will save your colors and sizes to localstorage</p>
+                <input type="button" value="save" onclick="saveCustomSVG()" style="font-size:32px">
+            </div>   
+        </div>
+    </body>
+</html>
